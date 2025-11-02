@@ -7,6 +7,7 @@ import {
 import { fastify } from 'fastify'
 import { fastifyCors } from '@fastify/cors'
 import { fastifySwagger } from '@fastify/swagger'
+import awsLambdaFastify from '@fastify/aws-lambda'
 import ScalarApiReference from '@scalar/fastify-api-reference'
 
 import { env } from "./env"
@@ -52,8 +53,15 @@ app.register(captureWebhook)
 app.register(generateHandler)
 
 const PORT = env.PORT ? Number(env.PORT) : 3333;
+let handlerExport: any
 
-app.listen({ port: PORT, host: '0.0.0.0' }).then(() => {
-  console.log(`🔥 HTTP server running on http://localhost:${PORT}!`)
-  console.log(`📚 Docs available at http://localhost:${PORT}/docs`)
-})
+if (env.NODE_ENV === 'production') {
+  handlerExport = awsLambdaFastify(app)
+} else {
+  app.listen({ port: PORT, host: '0.0.0.0' }).then(() => {
+    console.log(`🔥 HTTP server running on http://localhost:${PORT}!`)
+    console.log(`📚 Docs available at http://localhost:${PORT}/docs`)
+  })
+}
+
+export const handler = handlerExport
