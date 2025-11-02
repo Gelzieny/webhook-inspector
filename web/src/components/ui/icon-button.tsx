@@ -14,9 +14,7 @@ const iconButton = tv({
   },
 })
 
-interface IconButtonProps
-  extends ComponentProps<'button'>,
-  VariantProps<typeof iconButton> {
+interface IconButtonProps extends ComponentProps<'button'>, VariantProps<typeof iconButton> {
   icon: ReactNode
 }
 

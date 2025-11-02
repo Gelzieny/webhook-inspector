@@ -1,10 +1,9 @@
 import { useSuspenseQuery } from '@tanstack/react-query'
-
-import { CodeBlock } from './ui/code-block'
+import { webhookDetailsSchema } from '../http/schemas/webhooks'
+import { WebhookDetailHeader } from './webhook-detail-header'
 import { SectionTitle } from './section-title'
 import { SectionDataTable } from './section-data-table'
-import { WebhookDetailHeader } from './webhook-detail-header'
-import { webhookDetailsSchema } from '../http/schemas/webhooks'
+import { CodeBlock } from './ui/code-block'
 
 interface WebhookDetailsProps {
   id: string

@@ -1,5 +1,5 @@
-import type { ComponentProps } from 'react'
 import { twMerge } from 'tailwind-merge'
+import type { ComponentProps } from 'react'
 
 interface BadgeProps extends ComponentProps<'span'> { }
 

@@ -43,12 +43,12 @@ function generateStripeWebhook() {
         id: eventType.includes('charge')
           ? `ch_${faker.string.alphanumeric(24)}`
           : eventType.includes('payment_intent')
-          ? `pi_${faker.string.alphanumeric(24)}`
-          : eventType.includes('invoice')
-          ? `in_${faker.string.alphanumeric(24)}`
-          : eventType.includes('customer')
-          ? `cus_${faker.string.alphanumeric(14)}`
-          : `cs_${faker.string.alphanumeric(24)}`,
+            ? `pi_${faker.string.alphanumeric(24)}`
+            : eventType.includes('invoice')
+              ? `in_${faker.string.alphanumeric(24)}`
+              : eventType.includes('customer')
+                ? `cus_${faker.string.alphanumeric(14)}`
+                : `cs_${faker.string.alphanumeric(24)}`,
         object: eventType.split('.')[0],
         amount: amount,
         currency: currency,

@@ -1,6 +1,6 @@
-import * as RadixCheckbox from '@radix-ui/react-checkbox'
 import { twMerge } from 'tailwind-merge'
 import { CheckIcon } from 'lucide-react'
+import * as RadixCheckbox from '@radix-ui/react-checkbox'
 
 interface CheckboxProps extends RadixCheckbox.CheckboxProps { }
 
