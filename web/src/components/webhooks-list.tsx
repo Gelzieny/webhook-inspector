@@ -14,6 +14,7 @@ export function WebhooksList() {
 
   const [checkedWebhooksIds, setCheckedWebhooksIds] = useState<string[]>([])
   const [generatedHandlerCode, setGeneratedHandlerCode] = useState<string | null>(null)
+  const [isGenerating, setIsGenerating] = useState(false) // 👈 novo estado de loading
 
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useSuspenseInfiniteQuery({
@@ -69,28 +70,31 @@ export function WebhooksList() {
 
   function handleCheckWebhook(checkedWebhookId: string) {
     if (checkedWebhooksIds.includes(checkedWebhookId)) {
-      setCheckedWebhooksIds(state => {
-        return state.filter(webhookId => webhookId !== checkedWebhookId)
-      })
+      setCheckedWebhooksIds(state => state.filter(webhookId => webhookId !== checkedWebhookId))
     } else {
       setCheckedWebhooksIds(state => [...state, checkedWebhookId])
     }
   }
 
   async function handleGenerateHandler() {
-    const response = await fetch('http://localhost:3333/api/generate', {
-      method: 'POST',
-      body: JSON.stringify({ webhookIds: checkedWebhooksIds }),
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    })
+    try {
+      setIsGenerating(true) // 👈 ativa o loading
 
-    type GenerateResponse = { code: string }
+      const response = await fetch('http://localhost:3333/api/generate', {
+        method: 'POST',
+        body: JSON.stringify({ webhookIds: checkedWebhooksIds }),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
 
-    const data: GenerateResponse = await response.json()
+      type GenerateResponse = { code: string }
+      const data: GenerateResponse = await response.json()
 
-    setGeneratedHandlerCode(data.code)
+      setGeneratedHandlerCode(data.code)
+    } finally {
+      setIsGenerating(false) // 👈 desativa o loading mesmo se der erro
+    }
   }
 
   const hasAnyWebhookChecked = checkedWebhooksIds.length > 0
@@ -100,24 +104,31 @@ export function WebhooksList() {
       <div className="flex-1 overflow-y-auto">
         <div className="space-y-1 p-2">
           <button
-            disabled={!hasAnyWebhookChecked}
+            disabled={!hasAnyWebhookChecked || isGenerating}
             className="bg-indigo-400 mb-3 text-white w-full rounded-lg flex items-center justify-center gap-3 font-medium text-sm py-2 disabled:opacity-50"
             onClick={() => handleGenerateHandler()}
           >
-            <Wand2 className="size-4" />
-            Gerar handler
+            {isGenerating ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                Gerando...
+              </>
+            ) : (
+              <>
+                <Wand2 className="size-4" />
+                Gerar handler
+              </>
+            )}
           </button>
 
-          {webhooks.map((webhook) => {
-            return (
-              <WebhooksListItem
-                key={webhook.id}
-                webhook={webhook}
-                onWebhookChecked={handleCheckWebhook}
-                isWebhookChecked={checkedWebhooksIds.includes(webhook.id)}
-              />
-            )
-          })}
+          {webhooks.map((webhook) => (
+            <WebhooksListItem
+              key={webhook.id}
+              webhook={webhook}
+              onWebhookChecked={handleCheckWebhook}
+              isWebhookChecked={checkedWebhooksIds.includes(webhook.id)}
+            />
+          ))}
         </div>
 
         {hasNextPage && (
@@ -134,9 +145,11 @@ export function WebhooksList() {
       {!!generatedHandlerCode && (
         <Dialog.Root defaultOpen>
           <Dialog.Overlay className="bg-black/60 inset-0 fixed z-20" />
-
           <Dialog.Content className="flex items-center justify-center fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] -translate-x-1/2 -translate-y-1/2 z-40">
             <div className="bg-zinc-900 w-[600px] p-4 rounded-lg border border-zinc-800 max-h-[620px] overflow-y-auto">
+              <Dialog.Title asChild>
+                <h2 className="sr-only">Generated Handler Code</h2>
+              </Dialog.Title>
               <CodeBlock language="typescript" code={generatedHandlerCode} />
             </div>
           </Dialog.Content>
