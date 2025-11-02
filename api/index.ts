@@ -1,3 +1,3 @@
-import type { handler } from "./serverless";
+import type { app } from "@/server";
 
-export default handler
+export default app
