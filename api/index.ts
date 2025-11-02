@@ -1,3 +1,8 @@
-import type { app } from "@/server";
+import { app } from '@/server'
+import type { VercelRequest, VercelResponse } from '@vercel/node'
 
-export default app
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  await app.ready()
+  app.server.emit('request', req, res)
+}

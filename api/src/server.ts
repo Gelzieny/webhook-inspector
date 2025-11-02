@@ -35,7 +35,9 @@ app.register(fastifySwagger, {
 
 app.register(ScalarApiReference, { routePrefix: '/docs' })
 
-app.get('/', async () => ({ message: '🚀 Webhook Inspector API running!' }))
+app.get('/', async () => {
+  return { message: '🚀 API Fastify funcionando na Vercel!', env: env.NODE_ENV }
+})
 
 app.register(listWebhooks)
 app.register(getWebhook)
