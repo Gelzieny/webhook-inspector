@@ -1,9 +1,9 @@
-import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
-import { createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
-import { webhooks } from '@/db/schema'
-import { db } from '@/db'
 import { eq } from 'drizzle-orm'
+import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
+
+import { db } from '@/db'
+import { webhooks } from '@/db/schema'
 
 export const deleteWebhook: FastifyPluginAsyncZod = async (app) => {
   app.delete(

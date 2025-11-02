@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/server.ts",
+    "build": "tsc",
     "start": "node dist/server.js",
     "format": "biome format --write",
     "db:generate": "drizzle-kit generate",
@@ -32,6 +33,7 @@
     "@fastify/swagger": "^9.5.2",
     "@scalar/fastify-api-reference": "^1.38.1",
     "ai": "^5.0.86",
+    "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.7",
     "drizzle-zod": "^0.8.3",
     "fastify": "^5.6.1",
